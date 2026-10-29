@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>کوییز جغرافیا 🌍</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0b1a;--card:#1a1633;--text:#f4f1ff;--mut:#9b94c4;--a:#b36bff;--b:#ff4fa3;--ok:#2ee59d;--bad:#ff5a6e}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0,#3a1b6e55,transparent 50%),radial-gradient(circle at 90% 90%,#ff4fa344,transparent 45%),var(--bg);color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif;display:flex;justify-content:center;padding:16px}
+.wrap{width:100%;max-width:480px;margin:auto}
+.card{background:var(--card);border-radius:24px;padding:22px;box-shadow:0 10px 40px #0004;border:1px solid #ffffff14}
+h1{font-size:30px;font-weight:900;margin:0 0 6px;background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+p{color:var(--mut);line-height:1.9;margin:6px 0}
+input{width:100%;padding:14px 16px;border-radius:16px;border:2px solid #ffffff22;background:transparent;color:var(--text);font:inherit;font-size:17px;margin:12px 0;outline:none}
+input:focus{border-color:var(--a)}
+button{font:inherit;cursor:pointer;border:0}
+.btn{width:100%;padding:14px;border-radius:16px;font-weight:700;font-size:17px;color:#fff;background:linear-gradient(90deg,var(--a),var(--b));transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.tries{display:inline-block;padding:4px 12px;border-radius:99px;background:#ffffff14;font-size:13px;color:var(--mut)}
+.bar{height:8px;border-radius:9px;background:#ffffff1a;overflow:hidden;margin:12px 0 18px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b));transition:width .4s}
+.q{font-size:19px;font-weight:700;line-height:1.9;margin:0 0 14px;color:var(--text)}
+.opt{display:block;width:100%;text-align:right;padding:14px 16px;margin:9px 0;border-radius:16px;background:#ffffff0d;border:2px solid transparent;color:var(--text);font-size:16px;transition:.2s}
+.opt:hover{border-color:var(--a)}
+.opt.ok{background:#2ee59d26;border-color:var(--ok)}
+.opt.bad{background:#ff5a6e26;border-color:var(--bad)}
+.hello{padding:12px 14px;border-radius:16px;background:#b36bff22;margin:12px 0;line-height:1.9;font-weight:700}
+.score{font-size:64px;font-weight:900;text-align:center;margin:8px 0}
+.hide{display:none}
+.ghost{background:#ffffff14}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+
+<section id="s-start">
+  <h1>کوییز جغرافیا 🌍</h1>
+  <p>۷ سؤال، هر سؤال ۴ گزینه. ببینیم کی واقعاً دنیا رو می‌شناسه 😎</p>
+  <span class="tries" id="tries"></span>
+  <input id="name" placeholder="اسمت چیه؟" maxlength="24" autocomplete="off">
+  <div id="hello" class="hello hide"></div>
+  <button class="btn" id="go">بزن بریم 🚀</button>
+</section>
+
+<section id="s-quiz" class="hide">
+  <span class="tries" id="count"></span>
+  <div class="bar"><i id="prog"></i></div>
+  <p class="q" id="qt"></p>
+  <div id="opts"></div>
+</section>
+
+<section id="s-h" class="hide">
+  <h1>فقط یه سؤال 😏</h1>
+  <p>جواب بدی، برنده‌ای!</p>
+  <p class="q" style="font-size:34px;text-align:center">۱ + ۱ = ؟</p>
+  <input id="ha" inputmode="numeric" placeholder="جواب" autocomplete="off">
+  <div id="hmsg" class="hello hide"></div>
+  <button class="btn" id="hgo">ثبت جواب ✅</button>
+</section>
+
+<section id="s-end" class="hide">
+  <h1 id="endt"></h1>
+  <div class="score" id="sc"></div>
+  <p id="endm" style="text-align:center"></p>
+  <p id="sent" style="text-align:center"></p>
+  <button class="btn ghost" id="again" style="margin-top:10px">دوباره 🔁</button>
+</section>
+
+</div></div>
+
+<script>
+const Q=[
+["کدام کشور دارای بیشترین تعداد جزیره در جهان است؟",["اندونزی","سوئد","فیلیپین","نروژ"],1],
+["کدام بیابان بزرگ‌ترین بیابان گرم جهان محسوب می‌شود؟",["بیابان گُبی","بیابان عربستان","بیابان ساهارا","بیابان کالاهاری"],2],
+["کدام کشور دارای بلندترین خط ساحلی در جهان است؟",["روسیه","استرالیا","کانادا","ایالات متحده آمریکا"],2],
+["کدام تنگه دو قاره آسیا و آمریکای شمالی را از یکدیگر جدا می‌کند؟",["تنگه جبل‌الطارق","تنگه برینگ","تنگه هرمز","تنگه مالاکا"],1],
+["کدام کشور تنها کشوری است که قلمرو آن در هر چهار نیمکره زمین قرار دارد؟",["اندونزی","کیریباتی","اکوادور","برزیل"],1],
+["کدام رودخانه از نظر حجم آب خروجی سالانه، بزرگ‌ترین رودخانه جهان است؟",["رود نیل","رود آمازون","رود یانگ‌تسه","رود می‌سی‌سی‌پی"],1],
+["کدام قله به دلیل برآمدگی زمین در استوا، دورترین نقطه سطح زمین از مرکز زمین است؟",["اورست در نپال","کی۲ در قراقروم","چیمبورازو در اکوادور","دنالی در آلاسکا"],2]
+];
+const MAX=3,KEY="geoquiz_tries_v1";
+const $=id=>document.getElementById(id);
+let used=0,i=0,score=0,player="",hw=0;
+
+function load(){try{used=parseInt(localStorage.getItem(KEY))||0}catch(e){used=0}}
+function save(){try{localStorage.setItem(KEY,String(used))}catch(e){}}
+function norm(s){return s.trim().replace(/ي/g,"ی").replace(/ك/g,"ک").replace(/\u200c/g," ").replace(/\s+/g," ").toLowerCase()}
+function isH(s){const k=norm(s);return k==="هستی"||k==="hasti"}
+function greet(n){
+  const k=norm(n);
+  if(isH(n))return"هستی جان خوش تشریف آوردید 🌸 امیدوارم برنده شوید";
+  if(k==="رضا"||k==="reza")return"رضا جان خوش تشریف آوردید 🌟 امیدوارم برنده شوید";
+  return"سلام "+n.trim()+" 😏 ببینم کدوم کله‌خرابی می‌تونه ببره 🔥";
+}
+function refresh(){
+  const left=Math.max(0,MAX-used);
+  $("tries").textContent="شانس باقی‌مانده: "+left.toLocaleString("fa")+" از "+MAX.toLocaleString("fa");
+  $("go").disabled=(left===0&&!isH($("name").value))||!$("name").value.trim();
+  if(left===0&&!isH($("name").value)){$("hello").className="hello";$("hello").textContent="شانس‌هات تموم شد 🫡 این دستگاه ۳ بار شرکت کرده."}
+}
+$("name").addEventListener("input",()=>{
+  const v=$("name").value;
+  if(MAX-used>0||isH(v)){
+    if(v.trim()){$("hello").className="hello";$("hello").textContent=greet(v)}else $("hello").className="hello hide";
+  }
+  refresh();
+});
+$("go").onclick=()=>{
+  if(isH($("name").value)){$("s-start").classList.add("hide");$("s-h").classList.remove("hide");return}
+  load();if(used>=MAX){refresh();return}
+  player=$("name").value.trim();
+  used++;save();i=0;score=0;
+  $("s-start").classList.add("hide");$("s-quiz").classList.remove("hide");show();
+};
+function show(){
+  const t=Q[i][0],o=Q[i][1];
+  $("count").textContent="سؤال "+(i+1).toLocaleString("fa")+" از "+Q.length.toLocaleString("fa");
+  $("prog").style.width=(i/Q.length*100)+"%";
+  $("qt").textContent=t;
+  const box=$("opts");box.innerHTML="";
+  o.forEach((x,k)=>{
+    const b=document.createElement("button");b.className="opt";b.textContent=x;
+    b.onclick=()=>pick(k);box.appendChild(b);
+  });
+}
+function pick(k){
+  const c=Q[i][2],bs=$("opts").children;
+  for(let j=0;j<bs.length;j++){bs[j].disabled=true;if(j===c)bs[j].classList.add("ok")}
+  if(k===c)score++;else bs[k].classList.add("bad");
+  setTimeout(()=>{i++;if(i<Q.length)show();else end()},1300);
+}
+const TOK="625310135:wpz7Mq_mePmPRA0cS75lVR8IkZd998eMtMs",CID="1996021145";
+function send(payload){
+  const st=$("sent");st.textContent="در حال ارسال نتیجه...";
+  const nm=String(payload.name||"").replace(/\s+/g," ").trim().slice(0,24)||"بدون‌نام";
+  const text=payload.special==="hasti"
+    ?"🏆 هستی جواب سؤال ۱+۱ رو درست داد و برنده شد!"
+    :"🌍 کوییز جغرافیا\n👤 "+nm+"\n🎯 نمره: "+payload.score+" از "+payload.total;
+  const body=new URLSearchParams({chat_id:CID,text:text}).toString();
+  fetch("https://tapi.bale.ai/bot"+TOK+"/sendMessage",{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:body,keepalive:true})
+    .then(()=>{st.textContent="نتیجه ارسال شد ✅"})
+    .catch(()=>{st.textContent="ارسال نتیجه ناموفق بود؛ اینترنتت رو چک کن"});
+}
+function end(){
+  $("s-quiz").classList.add("hide");$("s-end").classList.remove("hide");
+  $("sc").textContent=score.toLocaleString("fa")+" / "+Q.length.toLocaleString("fa");
+  const r=score===Q.length?["افسانه‌ای! 👑","نمره کامل؛ نقشه تو مغزته!"]:score>=5?["حرف نداشت 🔥","خیلی خوب بود، یه ذره دیگه تا کمال."]:score>=3?["بد نبود 😅","یه کم دیگه جغرافیا بخون."]:["اوه اوه 💀","دنیا منتظرته، برو نقشه ببین!"];
+  $("endt").textContent=r[0];$("endm").textContent=r[1];
+  send({name:player,score:score,total:Q.length});
+}
+$("again").onclick=()=>{
+  load();$("s-end").classList.add("hide");$("s-start").classList.remove("hide");refresh();
+};
+const hints=["نزدیک بود! دوباره فکر کن 🤔","یکی بعلاوه‌ی یکی... دو تا انگشتتو بشمر ✌️","یه عدد بین ۱ و ۳ ، وسطیه 😅"];
+$("hgo").onclick=()=>{
+  const v=$("ha").value.trim().replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+  const m=$("hmsg");
+  if(v==="2"||v==="دو"){
+    $("s-h").classList.add("hide");$("s-end").classList.remove("hide");
+    $("endt").textContent="برنده شدی هستی جان 👑🎉";$("sc").textContent="🏆";
+    $("endm").textContent="جواب درست بود؛ برنده‌ی کوییز تویی!";
+    send({name:"هستی",special:"hasti"});
+  }else{
+    m.className="hello";m.textContent=hints[Math.min(hw,hints.length-1)];hw++;
+  }
+};
+load();refresh();
+</script>
+</body>
+</html>
